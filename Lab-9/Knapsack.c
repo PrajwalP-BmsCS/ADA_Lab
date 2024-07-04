@@ -1,42 +1,59 @@
 #include<stdio.h>
+#include<stdlib.h>
 
-int max(int a, int b) { return (a > b)? a : b; }
-int knapSack(int W, int wt[], int val[], int n)
-{
-   int i, w;
-   int K[n+1][W+1];
-
-   for (i = 0; i <= n; i++)
-   {
-       for (w = 0; w <= W; w++)
-       {
-           if (i==0 || w==0)
-               K[i][w] = 0;
-           else if (wt[i-1] <= w)
-                 K[i][w] = max(val[i-1] + K[i-1][w-wt[i-1]],  K[i-1][w]);
-           else
-                 K[i][w] = K[i-1][w];
-       }
-   }
-
-   return K[n][W];
-}
-
-int main()
-{
-    int i, n, val[20], wt[20], W;
-
-    printf("Enter number of items:");
-    scanf("%d", &n);
-
-    printf("Enter value and weight of items:\n");
-    for(i = 0;i < n; ++i){
-    	scanf("%d%d", &val[i], &wt[i]);
+int max(int a, int b){
+    if(a > b){
+        return a;
     }
-
-    printf("Enter size of knapsack:");
-    scanf("%d", &W);
-
-    printf("%d", knapSack(W, wt, val, n));
-    return 0;
+    return b;
 }
+
+void main(){
+    int n;
+    printf("Enter number of weights: ");
+    scanf("%d", &n);
+    int w[n], c[n];
+    printf("Enter weights: ");
+    for(int i = 0; i < n; i++){
+        scanf("%d", &w[i]);
+    }
+    printf("Enter coins in weights: ");
+    for(int i = 0; i < n; i++){
+        scanf("%d", &c[i]);
+    }
+    int bag;
+    printf("Enter the capacity of knapsack: ");
+    scanf("%d", &bag);
+    int dp[n + 1][bag + 1];
+    for(int i = 0; i < n + 1; i++){
+        for(int j = 0; j < bag + 1; j++){
+            dp[i][j] = 0;
+        }
+    }
+    for(int i = 1; i < n + 1; i++){
+        for(int j = 1; j < bag + 1; j++){
+            if(j - w[i - 1] >= 0){
+                dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - w[i - 1]] + c[i - 1]);
+            }
+            else{
+                dp[i][j] = dp[i-1][j];
+            }
+        }
+    }
+    for(int i = 0; i < n + 1; i++){
+        if(i == 0){
+            printf("-\t-\t%d\t", i);
+        }
+        else{
+            printf("%d\t%d\t%d\t", w[i-1], c[i-1], i);
+        }
+        for(int j = 0; j < bag + 1; j++){
+            printf("%d\t", dp[i][j]);
+        }
+        printf("\n");
+    }
+    printf("Maximum possible: %d", dp[n][bag]);
+}
+
+
+
