@@ -1,4 +1,6 @@
 import numpy as np
+import random 
+
 flag = True
 d = [["-"] * 3 for i in range(3)]
 win = ""
@@ -34,38 +36,46 @@ def check():
     if "-" not in l:
         return True
 
+turn = random.choice(["X", "O"])
+print(f"{turn} goes first!")
+
 while flag:
-    x = tuple(map(int, input("Enter row and column of X input: ").strip().split()))
-    if d[x[0]][x[1]] != '-':
-        print("Spot already occupied, pick a new location.")
-        continue
+    if turn == "X":
+        x = tuple(map(int, input("Enter row and column of X input: ").strip().split()))
+        if d[x[0]][x[1]] != '-':
+            print("Spot already occupied, pick a new location.")
+            continue
 
-    d[x[0]][x[1]] = "X"
+        d[x[0]][x[1]] = "X"
 
-    if checkd() or any(checkr(i) for i in range(3)) or any(checkc(i) for i in range(3)):
-        print(f"{win} Wins!")
+        if checkd() or any(checkr(i) for i in range(3)) or any(checkc(i) for i in range(3)):
+            print(f"{win} Wins!")
+            display()
+            break
+
         display()
-        break
+        if check():
+            print("Tie")
+            break
 
-    display()
-    if check():
-        print("Tie")
-        break
-        
-    y = tuple(map(int, input("Enter row and column of O input: ").strip().split()))
-    if d[y[0]][y[1]] != '-':
-        print("Spot already occupied, pick a new location.")
-        d[x[0]][x[1]] = "-"
-        continue
+        turn = "O"  
 
-    d[y[0]][y[1]] = "O"
+    elif turn == "O":
+        y = tuple(map(int, input("Enter row and column of O input: ").strip().split()))
+        if d[y[0]][y[1]] != '-':
+            print("Spot already occupied, pick a new location.")
+            continue
 
-    if checkd() or any(checkr(i) for i in range(3)) or any(checkc(i) for i in range(3)):
-        print(f"{win} Wins!")
+        d[y[0]][y[1]] = "O"
+
+        if checkd() or any(checkr(i) for i in range(3)) or any(checkc(i) for i in range(3)):
+            print(f"{win} Wins!")
+            display()
+            break
+
         display()
-        break
+        if check():
+            print("Tie")
+            break
 
-    display()
-    if check():
-        print("Tie")
-        break
+        turn = "X"  
